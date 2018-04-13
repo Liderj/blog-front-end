@@ -1,15 +1,18 @@
-import Vue from 'vue'
-import Router from 'vue-router'
-import HelloWorld from '@/components/HelloWorld'
+import Vue from "vue";
+import Router from "vue-router";
 
-Vue.use(Router)
+import app from "./home";
 
-export default new Router({
-  routes: [
-    {
-      path: '/',
-      name: 'HelloWorld',
-      component: HelloWorld
-    }
-  ]
-})
+import user from "./user";
+
+Vue.use(Router);
+
+const router = new Router({
+  routes: [...app]
+});
+
+router.beforeEach((to, from, next) => {
+  window.document.title = to.meta.title;
+  next();
+});
+export default router;
