@@ -8,7 +8,7 @@ import user from "./user";
 Vue.use(Router);
 
 const router = new Router({
-  routes: [...app]
+  routes: [...app, ...user]
 });
 
 router.beforeEach((to, from, next) => {
