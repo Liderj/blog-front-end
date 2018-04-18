@@ -5,12 +5,11 @@
         <img src="@/assets/logo.png" alt="V博客">
         <v-form class="form" v-model="valid" ref="form" lazy-validation>
           <v-text-field label="手机号" v-model="tel" :rules="telRules" :counter="11" required type="tel"></v-text-field>
+          <v-text-field label="昵称" v-model="nickname" :rules="nicknameRules" required type="text"></v-text-field>
           <v-text-field label="密码" v-model="password" :rules="passwordRules" required type="password"></v-text-field>
-          <v-layout justify-space-between align-center="">
-            <v-btn to="/register">注册</v-btn>
-            <v-btn color="success" :disabled="!valid" @click="login">
-              登录
-            </v-btn>
+          <v-text-field label="确认密码" v-model="password1" :rules="passwordVerify" required type="password"></v-text-field>
+          <v-layout justify-center align-center>
+            <v-btn @click="_register" color="info" :disabled="!valid">注册</v-btn>
           </v-layout>
         </v-form>
       </v-layout>
@@ -18,10 +17,10 @@
   </v-container>
 </template>
 <script>
+import vuetifyToast from "vuetify-toast";
 export default {
   data() {
     return {
-      title: "登录",
       valid: false,
       tel: "",
       telRules: [
@@ -32,23 +31,37 @@ export default {
           "请输入正确的手机号码"
       ],
       password: "",
-      passwordRules: [v => !!v || "密码不能为空"]
+      password1: "",
+      passwordRules: [
+        v => !!v || "密码不能为空",
+        v =>
+          (v.trim().length > 6 && v.trim().length <= 12) ||
+          "密码长度必须为6-12位"
+      ],
+      passwordVerify: [v => v == this.password || "两次输入密码不一致"],
+      captcha: "",
+      nickname: "",
+      nicknameRules: [
+        v => !!v || "昵称不能为空",
+        v =>
+          (v.trim().length > 0 && v.trim().length <= 6) || "请输入6字以内昵称"
+      ]
     };
   },
+  mounted() {
+    this.$nextTick(() => {});
+  },
   methods: {
-    login() {
+    _register() {
       const postval = {
         mobile: this.tel,
-        password: this.password
+        password: this.password,
+        nickname: this.nickname
       };
-      this.axios.post("/api/front-end/login", postval).then(res => {
+      this.axios.post("/api/front-end/register", postval).then(res => {
         if (res.code == 200) {
-          localStorage.setItem("v-token", res.data.token);
-          if (this.$route.query.redirect) {
-            this.$router.push(this.$route.query.redirect);
-          } else {
-            this.$router.push("/");
-          }
+          vuetifyToast.success(res.message);
+          this.$router.push("login");
         }
       });
     }
@@ -64,5 +77,8 @@ export default {
 .form {
   width: 100%;
   max-width: 400px;
+}
+.verify {
+  width: 100%;
 }
 </style>

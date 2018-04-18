@@ -5,7 +5,8 @@ export default [
     path: "/",
     name: "index",
     meta: {
-      title: "首页"
+      title: "首页",
+      requiresAuth: true
     },
     component: Home
   }

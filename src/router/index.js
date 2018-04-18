@@ -15,4 +15,21 @@ router.beforeEach((to, from, next) => {
   window.document.title = to.meta.title;
   next();
 });
+
+router.beforeEach((to, from, next) => {
+  const token = localStorage.getItem("v-token");
+  if (to.matched.some(record => record.meta.requiresAuth)) {
+    // 判断登录状态
+    if (token) {
+      // 继续路由
+      next();
+    } else {
+      // 重定向到登录界面
+      next({ path: "/login", query: { redirect: to.fullPath } });
+    }
+  } else {
+    // 继续路由
+    next();
+  }
+});
 export default router;

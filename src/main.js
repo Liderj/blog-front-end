@@ -3,6 +3,12 @@ import App from "./App";
 import router from "./router";
 import Vuetify from "vuetify";
 import "vuetify/dist/vuetify.min.css";
+
+// import "vue2-toast/lib/toast.css";
+
+// import Toast from "vue2-toast";
+// Vue.use(Toast);
+
 Vue.use(Vuetify, {
   theme: {
     primary: "#2196F3",
@@ -14,6 +20,9 @@ Vue.use(Vuetify, {
     success: "#4caf50"
   }
 });
+
+import axios from "./http";
+Vue.prototype.axios = axios;
 
 Vue.config.productionTip = false;
 
