@@ -8,6 +8,14 @@
           <v-text-field label="昵称" v-model="nickname" :rules="nicknameRules" required type="text"></v-text-field>
           <v-text-field label="密码" v-model="password" :rules="passwordRules" required type="password"></v-text-field>
           <v-text-field label="确认密码" v-model="password1" :rules="passwordVerify" required type="password"></v-text-field>
+           <v-radio-group v-model="sexSelected" row label="您愿意公开您的性别吗？">
+            <v-radio
+              v-for="(item,n) in sex"
+              :key="n"
+              :label="item"
+              :value="n+1"
+            ></v-radio>
+          </v-radio-group>
           <v-layout justify-center align-center>
             <v-btn @click="_register" color="info" :disabled="!valid">注册</v-btn>
           </v-layout>
@@ -22,6 +30,8 @@ export default {
   data() {
     return {
       valid: false,
+      sex: ["男", "女", "保密"],
+      sexSelected: 1,
       tel: "",
       telRules: [
         v => !!v || "手机号不能为空",

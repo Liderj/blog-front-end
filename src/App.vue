@@ -1,66 +1,74 @@
 <template>
   <v-app>
-    <!-- <v-navigation-drawer
-      persistent
-      :mini-variant="miniVariant"
-      :clipped="clipped"
-      v-model="drawer"
-      enable-resize-watcher
+    <v-navigation-drawer
+     class="hidden-sm-and-up"
       fixed
       app
-    > -->
-    <!-- <v-list>
+      v-model="drawer"
+      style="width:120px"
+    >
+    <v-list dense >
         <v-list-tile
-          value="true"
+          :value="category ==item.id"
           v-for="(item, i) in items"
           :key="i"
+          @click="selectCategory(item.id,search)"
         >
-          <v-list-tile-action>
-            <v-icon v-html="item.icon"></v-icon>
-          </v-list-tile-action>
           <v-list-tile-content>
-            <v-list-tile-title v-text="item.title"></v-list-tile-title>
+            <v-list-tile-title v-text="item.name" class="text-xs-center"></v-list-tile-title>
           </v-list-tile-content>
         </v-list-tile>
       </v-list>
-    </v-navigation-drawer> -->
-    <v-toolbar app :clipped-left="clipped">
-      <v-toolbar-side-icon @click.stop="drawer = !drawer"></v-toolbar-side-icon>
-      <v-btn icon @click.stop="miniVariant = !miniVariant">
-        <v-icon v-html="miniVariant ? 'chevron_right' : 'chevron_left'"></v-icon>
-      </v-btn>
-      <v-btn icon @click.stop="clipped = !clipped">
-        <v-icon>web</v-icon>
-      </v-btn>
-      <v-btn icon @click.stop="fixed = !fixed">
-        <v-icon>remove</v-icon>
-      </v-btn>
-      <v-toolbar-title v-text="title"></v-toolbar-title>
-      <v-spacer></v-spacer>
-      <v-btn icon @click.stop="rightDrawer = !rightDrawer">
-        <v-icon>menu</v-icon>
-      </v-btn>
-    </v-toolbar>
-    <v-content>
-      <router-view/>
-    </v-content>
-    <!-- <v-navigation-drawer
-      temporary
-      :right="right"
-      v-model="rightDrawer"
-      fixed
+    </v-navigation-drawer>
+    <v-toolbar v-if="showTop"  color="blue darken-3" class="pl-0 " 
+      dark
       app
-    >
-      <v-list>
-        <v-list-tile @click="right = !right">
-          <v-list-tile-action>
-            <v-icon>compare_arrows</v-icon>
-          </v-list-tile-action>
-          <v-list-tile-title>Switch drawer (click me)</v-list-tile-title>
-        </v-list-tile>
-      </v-list>
-    </v-navigation-drawer> -->
-
+      fixed>
+        <v-layout row wrap>
+          <v-flex md8 offset-md2  xs12>
+              <v-layout align-center>
+                <v-toolbar-title  class="ml-0 pl-2">
+                  <v-toolbar-side-icon  class="hidden-sm-and-up" @click.stop="drawer = !drawer"></v-toolbar-side-icon>
+                  <span class="hidden-sm-and-down">
+                    <img src="@/assets/logo.png" style="width:20px">
+                    V博
+                    </span>
+                </v-toolbar-title>
+                <v-flex class="pl-2 hidden-sm-and-down">
+                  <v-layout >
+                    <div v-for="(item, i) in items"  @click="selectCategory(item.id,search)" :key="i" class="pl-4 nav" :style="{color:category ==item.id?'#42A5F5':''}">
+                      {{item.name}}
+                    </div>
+                  </v-layout>
+                 
+                </v-flex>                
+                <v-flex  class="pl-1">
+                  <v-text-field
+                    clearable
+                    flat
+                    solo-inverted
+                    prepend-icon="search"
+                    label="搜索微博或文章"
+                    v-model="search"
+                   :prepend-icon-cb="selectCategory(category,search)"
+                  ></v-text-field>
+                </v-flex>
+                <v-btn icon  align-end>
+                  <v-icon>face</v-icon>
+                </v-btn>
+              </v-layout>
+          </v-flex>
+        </v-layout>
+    </v-toolbar>
+    <!-- <v-content > -->
+       <v-container fluid fill-height>
+           <v-layout row wrap>
+            <v-flex md8 offset-md2  xs12>
+              <router-view></router-view>
+            </v-flex>
+           </v-layout>
+    </v-container>
+    <!-- </v-content> -->
     <v-footer :fixed="fixed" app>
       <v-layout row justify-center>
         <span>&copy; 2018 张雄风</span>
@@ -73,22 +81,44 @@
 export default {
   data() {
     return {
-      // clipped: false,
-      // drawer: true,
+      drawer: true,
       fixed: false,
-      // items: [
-      //   {
-      //     icon: "bubble_chart",
-      //     title: "Inspire"
-      //   }
-      // ],
-      // miniVariant: false,
-      // right: true,
-      // rightDrawer: false,
+      category: null,
+      showTop: true,
+      search: null,
+      items: [
+        {
+          id: null,
+          name: "全部分类"
+        }
+      ],
       title: "V博"
     };
   },
-  name: "App"
+  name: "App",
+  created() {
+    this.getCategory();
+  },
+  methods: {
+    selectCategory(id, search = this.search) {
+      this.category = id;
+      id
+        ? this.$router.push("/?category=" + id + "&search=" + search)
+        : this.$router.push("/?search=" + search);
+    },
+    getCategory() {
+      this.axios.get("/api/front-end/category").then(res => {
+        if (res.code == 200) {
+          this.items = this.items.concat(res.data.filter(v => v.id != 2));
+          this.items.push(res.data.filter(v => v.id == 2)[0]);
+        }
+      });
+    }
+  }
 };
 </script>
-
+<style scoped>
+.nav {
+  cursor: pointer;
+}
+</style>
