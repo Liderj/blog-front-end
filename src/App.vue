@@ -9,7 +9,7 @@
         </v-list-tile>
       </v-list>
     </v-navigation-drawer>
-    <v-toolbar color="blue darken-3" class="pl-0 " dark app fixed>
+    <v-toolbar v-if="$store.state.showTop" color="blue darken-3" class="pl-0 " dark app fixed>
       <div class="container pl-0 pt-0 pb-0 pr-0">
         <v-layout align-center>
           <v-toolbar-title class="ml-0">
@@ -27,28 +27,31 @@
 
           </v-flex>
           <v-flex class="pl-1">
-            <v-text-field clearable flat solo-inverted prepend-icon="search" label="搜索微博或文章" v-model="search" :prepend-icon-cb="selectCategory(category,search)"></v-text-field>
+            <v-text-field  flat solo-inverted append-icon="search" label="搜索微博或文章" v-model="search" :append-icon-cb="searchPost"></v-text-field>
           </v-flex>
-          <v-btn icon align-end>
-            <v-icon>face</v-icon>
-          </v-btn>
+           <v-btn icon class="pl-1" @click="$router.push('/login')" v-if="!$store.state.user"> 登录</v-btn>
+           <v-menu v-else offset-y>
+              <v-btn icon slot="activator">
+                <v-icon v-if="!$store.state.user.avatar">face</v-icon>
+                 <v-avatar
+                    v-else
+                    size="30"
+                    class="grey lighten-4"
+                  >
+                    <img :src="$store.state.user.avatar" alt="avatar">
+                  </v-avatar>
+                </v-btn>
+              <v-list>
+                <v-list-tile v-for="(item,i) in actions" :key="i">
+                  <v-list-tile-title>{{ item.name }}</v-list-tile-title>
+                </v-list-tile>
+              </v-list>
+            </v-menu>
         </v-layout>
       </div>
     </v-toolbar>
     <div class="container">
       <router-view></router-view>
-      <v-speed-dial class="hidden-sm-and-up" v-model="fab" :bottom="true" :right="true" direction="top">
-        <v-btn slot="activator" color="blue darken-2" dark fab hover v-model="fab">
-          <v-icon>widgets</v-icon>
-          <v-icon>close</v-icon>
-        </v-btn>
-        <v-btn fab dark small color="green">
-          <v-icon>edit</v-icon>
-        </v-btn>
-        <v-btn fab dark small color="indigo">
-          <v-icon>add</v-icon>
-        </v-btn>
-      </v-speed-dial>
     </div>
     <v-footer :fixed="fixed" app>
       <v-layout row justify-center>
@@ -74,19 +77,42 @@ export default {
           name: "全部分类"
         }
       ],
+      actions: [
+        {
+          url: "",
+          name: "发布微博"
+        },
+        {
+          url: "",
+          name: "发布文章"
+        },
+        {
+          url: "",
+          name: "我的主页"
+        },
+        {
+          url: "",
+          name: "修改资料"
+        },
+        {
+          url: "",
+          name: "修改密码"
+        }
+      ],
       title: "V博"
     };
   },
   name: "App",
   created() {
+    console.log(this.$store);
     this.getCategory();
   },
   methods: {
     selectCategory(id, search = this.search) {
       this.category = id;
-      id
-        ? this.$router.push("/?category=" + id + "&search=" + search)
-        : this.$router.push("/?search=" + search);
+      // id
+      //   ? this.$router.push("/?category=" + id + "&search=" + search)
+      //   : this.$router.push("/?search=" + search);
     },
     getCategory() {
       this.axios.get("/api/front-end/category").then(res => {
@@ -95,6 +121,9 @@ export default {
           this.items.push(res.data.filter(v => v.id == 2)[0]);
         }
       });
+    },
+    searchPost() {
+      console.log(this.search);
     }
   }
 };

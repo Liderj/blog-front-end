@@ -44,6 +44,7 @@ export default {
       this.axios.post("/api/front-end/login", postval).then(res => {
         if (res.code == 200) {
           localStorage.setItem("v-token", res.data.token);
+          this.$store.commit("SET_TOKEN", res.data.token);
           if (this.$route.query.redirect) {
             this.$router.push(this.$route.query.redirect);
           } else {
@@ -62,7 +63,7 @@ export default {
   height: 100%;
 }
 .form {
-  width: 100%;
+  width: 90%;
   max-width: 400px;
 }
 </style>

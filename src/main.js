@@ -11,15 +11,15 @@ import store from "./store";
 // Vue.use(Toast);
 
 Vue.use(Vuetify, {
-  theme: {
-    primary: "#2196F3",
-    secondary: "#03A9F4",
-    accent: "#00BCD4",
-    error: "#f44336",
-    warning: "#ffeb3b",
-    info: "#2196f3",
-    success: "#4caf50"
-  }
+    theme: {
+        primary: "#2196F3",
+        secondary: "#03A9F4",
+        accent: "#00BCD4",
+        error: "#f44336",
+        warning: "#ffeb3b",
+        info: "#2196f3",
+        success: "#4caf50"
+    }
 });
 
 import axios from "./http";
@@ -28,30 +28,35 @@ Vue.prototype.axios = axios;
 Vue.config.productionTip = false;
 
 router.beforeEach((to, from, next) => {
-  to.meta.showTop
-    ? (store.state.showTop = to.meta.showTop)
-    : (store.state.showTop = false);
-  // this.$store.commit("SHOW_TOP", false);
-  window.document.title = to.meta.title;
-  const token = localStorage.getItem("v-token");
-  if (to.matched.some(record => record.meta.requiresAuth)) {
-    // 判断登录状态
-    if (token) {
-      // 继续路由
-      next();
+    to.meta.showTop ?
+        (store.commit('SHOW_TOP', to.meta.showTop)) :
+        store.commit('SHOW_TOP', false);
+    // this.$store.commit("SHOW_TOP", false);
+    window.document.title = to.meta.title;
+    const token = localStorage.getItem("v-token");
+    if (to.matched.some(record => record.meta.requiresAuth)) {
+        // 判断登录状态
+        if (token) {
+            // 继续路由
+            if (!store.state.user) {
+                store.dispatch('GETUSER').then().catch(e => {
+                    next({ path: "/login", query: { redirect: to.fullPath } });
+                })
+            }
+            next();
+        } else {
+            // 重定向到登录界面
+            next({ path: "/login", query: { redirect: to.fullPath } });
+        }
     } else {
-      // 重定向到登录界面
-      next({ path: "/login", query: { redirect: to.fullPath } });
+        // 继续路由
+        next();
     }
-  } else {
-    // 继续路由
-    next();
-  }
 });
 /* eslint-disable no-new */
 new Vue({
-  el: "#app",
-  router,
-  store,
-  render: h => h(App)
+    el: "#app",
+    router,
+    store,
+    render: h => h(App)
 });
