@@ -1,12 +1,14 @@
-const Home = () =>
-    import ( /* webpackChunkName: "Home" */ "../view/home");
+const Home = () => import(/* webpackChunkName: "Home" */ "../view/home");
 
-export default [{
+export default [
+  {
     path: "/",
     name: "index",
     meta: {
-        title: "首页",
-        requiresAuth: false
+      showTop: true,
+      title: "首页",
+      requiresAuth: false
     },
     component: Home
-}];
+  }
+];
