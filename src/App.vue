@@ -2,7 +2,7 @@
   <v-app>
     <v-navigation-drawer class="hidden-sm-and-up" fixed app v-model="drawer" style="width:120px">
       <v-list dense>
-        <v-list-tile :value="category ==item.id" v-for="(item, i) in items" :key="i" @click="selectCategory(item.id,search)">
+        <v-list-tile :value="category ==item.id" v-for="(item, i) in items" :key="i" @click="selectCategory(item.id)">
           <v-list-tile-content>
             <v-list-tile-title v-text="item.name" class="text-xs-center"></v-list-tile-title>
           </v-list-tile-content>
@@ -18,9 +18,9 @@
               <img src="@/assets/logo.png" style="width:20px"> V博
             </span>
           </v-toolbar-title>
-          <v-flex class="pl-2 hidden-sm-and-down">
+          <v-flex class="pl-2 hidden-md-and-down">
             <v-layout>
-              <div v-for="(item, i) in items" @click="selectCategory(item.id,search)" :key="i" class="pl-4 nav" :style="{color:category ==item.id?'#42A5F5':''}">
+              <div v-for="(item, i) in items" @click="selectCategory(item.id)" :key="i" class="pl-4 nav" :style="{color:category ==item.id?'#42A5F5':''}">
                 {{item.name}}
               </div>
             </v-layout>
@@ -41,16 +41,16 @@
                     <img :src="$store.state.user.avatar" alt="avatar">
                   </v-avatar>
                 </v-btn>
-              <v-list>
+              <v-list >
                 <v-list-tile v-for="(item,i) in actions" :key="i">
-                  <v-list-tile-title>{{ item.name }}</v-list-tile-title>
+                  <v-list-tile-title> <router-link :to="item.url" class="link"> {{ item.name }}</router-link></v-list-tile-title>
                 </v-list-tile>
               </v-list>
             </v-menu>
         </v-layout>
       </div>
     </v-toolbar>
-    <div class="container">
+    <div class="container" :style="contentPadding">
       <router-view></router-view>
     </div>
     <v-footer :fixed="fixed" app>
@@ -107,12 +107,25 @@ export default {
     console.log(this.$store);
     this.getCategory();
   },
+  computed: {
+    contentPadding() {
+      let a = {
+        paddingTop: "80px"
+      };
+      if (document.body.clientWidth < 960) {
+        a.paddingTop = "65px";
+        a.paddingLeft = "10px";
+        a.paddingRight = "10px";
+      }
+      return a;
+    }
+  },
   methods: {
-    selectCategory(id, search = this.search) {
+    selectCategory(id) {
       this.category = id;
-      // id
-      //   ? this.$router.push("/?category=" + id + "&search=" + search)
-      //   : this.$router.push("/?search=" + search);
+      id
+        ? this.$router.push("/?category=" + id + "&search=" + this.search)
+        : this.$router.push("/?search=" + this.search);
     },
     getCategory() {
       this.axios.get("/api/front-end/category").then(res => {
@@ -123,7 +136,14 @@ export default {
       });
     },
     searchPost() {
-      console.log(this.search);
+      if (!this.search) {
+        return false;
+      }
+      this.category
+        ? this.$router.push(
+            "/?category=" + this.category + "&search=" + this.search
+          )
+        : this.$router.push("/?search=" + this.search);
     }
   }
 };
@@ -142,5 +162,9 @@ export default {
 .speed-dial {
   position: absolute;
   bottom: 40px;
+}
+.link {
+  color: #000;
+  text-decoration: none;
 }
 </style>
