@@ -45,7 +45,7 @@ export default {
       passwordRules: [
         v => !!v || "密码不能为空",
         v =>
-          (v.trim().length > 6 && v.trim().length <= 12) ||
+          (v.trim().length > 5 && v.trim().length <= 12) ||
           "密码长度必须为6-12位"
       ],
       passwordVerify: [v => v == this.password || "两次输入密码不一致"],

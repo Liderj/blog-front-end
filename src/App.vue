@@ -2,7 +2,7 @@
   <v-app>
     <v-navigation-drawer class="hidden-sm-and-up" fixed app v-model="drawer" style="width:120px">
       <v-list dense>
-        <v-list-tile :value="category ==item.id" v-for="(item, i) in items" :key="i" @click="selectCategory(item.id)">
+        <v-list-tile :value="$route.query.category ==item.id" v-for="(item, i) in items" :key="i" @click="selectCategory(item.id)">
           <v-list-tile-content>
             <v-list-tile-title v-text="item.name" class="text-xs-center"></v-list-tile-title>
           </v-list-tile-content>
@@ -20,7 +20,7 @@
           </v-toolbar-title>
           <v-flex class="pl-2 hidden-md-and-down">
             <v-layout>
-              <div v-for="(item, i) in items" @click="selectCategory(item.id)" :key="i" class="pl-4 nav" :style="{color:category ==item.id?'#42A5F5':''}">
+              <div v-for="(item, i) in items" @click="selectCategory(item.id)" :key="i" class="pl-4 nav" :style="{color:$route.query.category ==item.id?'#42A5F5':''}">
                 {{item.name}}
               </div>
             </v-layout>
@@ -51,6 +51,7 @@
       </div>
     </v-toolbar>
     <div class="container" :style="contentPadding">
+      <v-progress-circular class="loading" v-if="$store.state.loading" indeterminate color="primary"></v-progress-circular>
       <router-view></router-view>
     </div>
     <v-footer :fixed="fixed" app>
@@ -110,6 +111,7 @@ export default {
   computed: {
     contentPadding() {
       let a = {
+        paddingBottom: "36px",
         paddingTop: "80px"
       };
       if (document.body.clientWidth < 960) {
@@ -123,9 +125,7 @@ export default {
   methods: {
     selectCategory(id) {
       this.category = id;
-      id
-        ? this.$router.push("/?category=" + id + "&search=" + this.search)
-        : this.$router.push("/?search=" + this.search);
+      id ? this.$router.push("/?category=" + id) : this.$router.push("/");
     },
     getCategory() {
       this.axios.get("/api/front-end/category").then(res => {
@@ -166,5 +166,11 @@ export default {
 .link {
   color: #000;
   text-decoration: none;
+}
+.loading {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
 </style>

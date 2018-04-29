@@ -6,14 +6,16 @@ export default new Vuex.Store({
     state: {
         showTop: true,
         user: null,
-        token: localStorage.getItem("v-token") || null
+        token: localStorage.getItem("v-token") || null,
+        loading: false,
     },
     mutations: {
         SHOW_TOP: (state, show) => {
             state.showTop = show;
         },
         SET_TOKEN: (state, data) => state.token = data,
-        SET_USER: (state, data) => state.user = data
+        SET_USER: (state, data) => state.user = data,
+        SET_LOADING: (state, data) => state.loading = data,
     },
     actions: {
         GETUSER({ commit }) {
