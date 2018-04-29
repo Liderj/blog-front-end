@@ -45,6 +45,8 @@
 </template>
 <script>
 import comment from "./component/comment";
+import vuetifyToast from "vuetify-toast";
+
 export default {
   data() {
     return {
@@ -67,7 +69,8 @@ export default {
       let postVal = {
         page: this.page,
         type: this.$route.query.category || null,
-        search: this.$route.query.search
+        search: this.$route.query.search,
+        my: this.$route.query.my ? 1 : 0
       };
       this.axios.get("/api/front-end/post", { params: postVal }).then(res => {
         if (res.data.list) {
@@ -104,6 +107,7 @@ export default {
       this.axios.get(`/api/front-end/post/like/${post.id}`).then(res => {
         if (res.code == 200) {
           post.likes++;
+          vuetifyToast.success(res.message);
         }
       });
     }

@@ -6,6 +6,10 @@ const changePwd = () =>
     import ( /* webpackChunkName: "re" */ "../view/uCenter/changePwd.vue");
 const changeInfo = () =>
     import ( /* webpackChunkName: "re" */ "../view/uCenter/changeInfo.vue");
+const addPost = () =>
+    import ( /* webpackChunkName: "re" */ "../view/uCenter/addPost.vue");
+const addWeibo = () =>
+    import ( /* webpackChunkName: "re" */ "../view/uCenter/addWeibo.vue");
 export default [{
         path: "/login",
         name: "index",
@@ -41,5 +45,25 @@ export default [{
             requiresAuth: true
         },
         component: changeInfo
+    },
+    {
+        path: "/addpost",
+        name: "addpost",
+        meta: {
+            showTop: true,
+            title: "发表文章",
+            requiresAuth: true
+        },
+        component: addPost
+    },
+    {
+        path: "/addweibo",
+        name: "addweibo",
+        meta: {
+            showTop: true,
+            title: "发布微博",
+            requiresAuth: true
+        },
+        component: addWeibo
     }
 ];

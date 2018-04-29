@@ -3,8 +3,8 @@
     <v-slide-y-transition mode="out-in">
       <v-layout column align-center justify-center>
         <v-form class="form"  v-model="valid"  ref="form" lazy-validation>
-          <v-text-field label="原密码" v-model="oldPassword" :rules="passwordRules" required type="password"></v-text-field>
-          <v-text-field label="新密码" v-model="password" :rules="passwordRules" required type="password"></v-text-field>
+          <v-text-field label="原密码" placeholder="请输入原密码"  v-model="oldPassword" :rules="passwordRules" required type="password"></v-text-field>
+            <v-text-field label="新密码" v-model="password" :rules="passwordRules" required type="password"></v-text-field>
           <v-text-field label="确认密码" v-model="password1" :rules="passwordVerify" required type="password"></v-text-field>
           <v-layout justify-center align-center>
             <v-btn @click="submit" color="info" :disabled="!valid">提交</v-btn>

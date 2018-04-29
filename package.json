@@ -11,7 +11,9 @@
   },
   "dependencies": {
     "axios": "^0.18.0",
+    "ckeditor": "^4.9.2",
     "vue": "^2.5.2",
+    "vue-ckeditor2": "^1.25.0",
     "vue-core-image-upload": "^2.4.5",
     "vue-photo-preview": "^1.0.8",
     "vue-picture-preview": "^1.2.0",

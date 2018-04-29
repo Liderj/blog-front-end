@@ -80,23 +80,23 @@ export default {
       ],
       actions: [
         {
-          url: "",
+          url: "/addweibo",
           name: "发布微博"
         },
         {
-          url: "",
+          url: "/addpost",
           name: "发布文章"
         },
         {
-          url: "",
-          name: "我的主页"
+          url: "/?my=1",
+          name: "我的文章/微博"
         },
         {
-          url: "",
+          url: "/changeInfo",
           name: "修改资料"
         },
         {
-          url: "",
+          url: "/changePwd",
           name: "修改密码"
         }
       ],

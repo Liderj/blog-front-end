@@ -19,7 +19,7 @@
         <div class="article-content" v-html="post.content"></div>
         <div class="artical-footer">
             <span>点赞数({{post.likes}})</span>
-              <v-icon size="15" color="blue lighten-1">thumb_up</v-icon>
+             <v-icon class="like" size="15" color="blue lighten-1" @click="like">thumb_up</v-icon>
         </div>
 
         <div class="artical-com-in" v-if="!!post.is_comment">
@@ -32,6 +32,7 @@
 </template>
 <script>
 import comment from "./component/comment";
+import vuetifyToast from "vuetify-toast";
 
 export default {
   data() {
@@ -73,11 +74,22 @@ export default {
             this.content = "";
           }
         });
+    },
+    like() {
+      this.axios.get(`/api/front-end/post/like/${this.post.id}`).then(res => {
+        if (res.code == 200) {
+          vuetifyToast.success(res.message);
+          this.post.likes++;
+        }
+      });
     }
   }
 };
 </script>
 <style scoped>
+.like {
+  cursor: pointer;
+}
 .article {
   min-height: 100%;
   position: relative;

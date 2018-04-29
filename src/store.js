@@ -16,9 +16,13 @@ export default new Vuex.Store({
         SET_TOKEN: (state, data) => state.token = data,
         SET_USER: (state, data) => state.user = data,
         SET_LOADING: (state, data) => state.loading = data,
+        SET_Avatar: (state, data) => state.user ? state.user.avatar = data : '',
+
     },
     actions: {
-        GETUSER({ commit }) {
+        GETUSER({
+            commit
+        }) {
             return new Promise((resolve, reject) => {
                 axios.get('/api/front-end/user').then(res => {
                     if (res.code === 200) {
