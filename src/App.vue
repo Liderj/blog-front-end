@@ -105,7 +105,6 @@ export default {
   },
   name: "App",
   created() {
-    console.log(this.$store);
     this.getCategory();
   },
   computed: {

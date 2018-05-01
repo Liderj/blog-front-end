@@ -1,6 +1,6 @@
 <template>
      <div class="center">
-       <div class="post-list" v-if="list.length">
+       <div class="post-list"  v-scroll="loadMore">
         <div class="post-item mb-2" v-for="(item,index) in list " :key="index">
           <div class="item-desc">
             <div class="user-info ">
@@ -31,10 +31,13 @@
             <comment :id="item.id" v-if="item.showComment"></comment>
           </div>
         </div>
-       </div>
-       <div class="no-data" v-if="nodata">
-          没有找到您想要的！！！！！
+         <div class="no-data" v-if="nodata">
+          没有更多的数据了
          </div>
+         <div style="position: relative;height:20px">
+           <v-progress-circular class="loading" v-if="loading" indeterminate color="primary"></v-progress-circular>
+         </div>
+       </div>
        <div class="ml-2 top-10 hidden-sm-and-down pl-3 pt-3 pr-3 pb-3"  v-if="top && !$store.state.loading">
          <h3 class="mb-3">热门推荐</h3>
         <ul class="top">
@@ -50,6 +53,7 @@ import vuetifyToast from "vuetify-toast";
 export default {
   data() {
     return {
+      loading: false,
       page: 1,
       list: [],
       top: null,
@@ -64,8 +68,18 @@ export default {
   },
   mounted() {},
   methods: {
+    loadMore(e) {
+      let a = window.pageYOffset || document.documentElement.scrollTop;
+      if (
+        Math.ceil(a + window.innerHeight) >= document.body.offsetHeight &&
+        !this.loading &&
+        !this.nodata
+      ) {
+        this.getList();
+      }
+    },
     getList() {
-      this.$store.commit("SET_LOADING", true);
+      this.loading = true;
       let postVal = {
         page: this.page,
         type: this.$route.query.category || null,
@@ -82,14 +96,14 @@ export default {
         } else {
           this.nodata = true;
         }
-        this.$store.commit("SET_LOADING", false);
+        this.loading = false;
       });
     },
     getHotList() {
-      this.$store.commit("SET_LOADING", true);
+      this.loading = true;
       this.axios.get("/api/front-end/post/top").then(res => {
         this.top = res.data;
-        this.$store.commit("SET_LOADING", false);
+        this.loading = false;
       });
     },
     getComment(item) {
@@ -159,7 +173,12 @@ ul > li a:hover {
   background: #f2f2f5;
   max-height: 580px;
 }
-
+.loading {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
 a {
   color: #333;
   text-decoration: none;
@@ -214,6 +233,9 @@ a {
 .post-comment i {
   margin: 0 5px 0 15px;
   cursor: pointer;
+}
+.no-data {
+  text-align: center;
 }
 @media only screen and (max-width: 599px) {
   .post-images img {
