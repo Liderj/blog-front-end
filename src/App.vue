@@ -43,8 +43,12 @@
                 </v-btn>
               <v-list >
                 <v-list-tile v-for="(item,i) in actions" :key="i">
-                  <v-list-tile-title> <router-link :to="item.url" class="link"> {{ item.name }}</router-link></v-list-tile-title>
+                  <v-list-tile-title> 
+                    <router-link :to="item.url" class="link"> {{ item.name }}</router-link>
+                    </v-list-tile-title>
+                  <!-- <v-list-tile-title @click="logoutOut">退出</v-list-tile-title> -->
                 </v-list-tile>
+                     <div class="lougout" @click="lougout">退出</div>
               </v-list>
             </v-menu>
         </v-layout>
@@ -122,6 +126,11 @@ export default {
     }
   },
   methods: {
+    lougout() {
+      this.$store.commit("SET_USER", null);
+      localStorage.clear();
+      this.$router.push("/login");
+    },
     selectCategory(id) {
       this.category = id;
       id ? this.$router.push("/?category=" + id) : this.$router.push("/");
@@ -171,5 +180,10 @@ export default {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
+}
+.lougout {
+  padding: 0 16px;
+  font-size: 16px;
+  color: #000;
 }
 </style>
