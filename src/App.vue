@@ -127,9 +127,13 @@ export default {
   },
   methods: {
     lougout() {
-      this.$store.commit("SET_USER", null);
-      localStorage.clear();
-      this.$router.push("/login");
+      this.axios.post("/api/front-end/logout").then(res => {
+        if (res.code == 200) {
+          this.$store.commit("SET_USER", null);
+          localStorage.clear();
+          this.$router.push("/login");
+        }
+      });
     },
     selectCategory(id) {
       this.category = id;
